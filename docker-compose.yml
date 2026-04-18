@@ -1,0 +1,128 @@
+services:
+
+  # ─────────────────────────────────────────────
+  # PostgreSQL — persistent storage
+  # ─────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: gigmatch-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       gigmatch
+      POSTGRES_USER:     ${DB_USER:-gigmatch}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-gigmatch}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gigmatch"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # ─────────────────────────────────────────────
+  # Redis — capacity pacing + deduplication
+  # AOF persistence so dedup keys survive restarts
+  # ─────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: gigmatch-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # ─────────────────────────────────────────────
+  # Spring Boot matching engine
+  # ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gigmatch-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USER:     ${DB_USER:-gigmatch}
+      DB_PASSWORD: ${DB_PASSWORD:-gigmatch}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q UP || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  # ─────────────────────────────────────────────
+  # Angular 17 frontend (nginx)
+  # ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gigmatch-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────
+  # Prometheus — metrics scraping
+  # ─────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gigmatch-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ─────────────────────────────────────────────
+  # Grafana — pre-provisioned dashboard
+  # ─────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gigmatch-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER:     admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED:  "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/gigmatch.json
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

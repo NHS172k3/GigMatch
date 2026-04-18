@@ -1,0 +1,130 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": {"list": []},
+  "description": "GigMatch Real-Time Matching Engine — operational dashboard",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "title": "Total Matches / min",
+      "type": "stat",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "round(rate(gigmatch_matches_total{outcome='MATCHED'}[1m]) * 60, 1)",
+        "legendFormat": "Matches/min"
+      }],
+      "options": {"colorMode": "background", "graphMode": "area"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"},
+        "thresholds": {"steps": [{"color": "green", "value": null}]}}}
+    },
+    {
+      "id": 2,
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "title": "Win Rate %",
+      "type": "stat",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "100 * rate(gigmatch_matches_total{outcome='MATCHED'}[5m]) / rate(gigmatch_matches_total[5m])",
+        "legendFormat": "Win Rate"
+      }],
+      "options": {"colorMode": "background", "graphMode": "none", "reduceOptions": {"calcs": ["lastNotNull"]}},
+      "fieldConfig": {"defaults": {"unit": "percent",
+        "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 30}, {"color": "green", "value": 60}]}}}
+    },
+    {
+      "id": 3,
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "title": "p99 Match Latency",
+      "type": "stat",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "histogram_quantile(0.99, rate(gigmatch_match_duration_ms_bucket[5m]))",
+        "legendFormat": "p99 ms"
+      }],
+      "options": {"colorMode": "background", "graphMode": "none"},
+      "fieldConfig": {"defaults": {"unit": "ms",
+        "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 100}, {"color": "red", "value": 200}]}}}
+    },
+    {
+      "id": 4,
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "title": "Error Rate",
+      "type": "stat",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "100 * rate(gigmatch_matches_total{outcome=~'NO_MATCH|TIMEOUT'}[5m]) / rate(gigmatch_matches_total[5m])",
+        "legendFormat": "Error %"
+      }],
+      "options": {"colorMode": "background"},
+      "fieldConfig": {"defaults": {"unit": "percent",
+        "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 10}, {"color": "red", "value": 30}]}}}
+    },
+    {
+      "id": 5,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "title": "Match Latency Percentiles",
+      "type": "timeseries",
+      "targets": [
+        {"datasource": "Prometheus", "expr": "histogram_quantile(0.50, rate(gigmatch_match_duration_ms_bucket[1m]))", "legendFormat": "p50"},
+        {"datasource": "Prometheus", "expr": "histogram_quantile(0.95, rate(gigmatch_match_duration_ms_bucket[1m]))", "legendFormat": "p95"},
+        {"datasource": "Prometheus", "expr": "histogram_quantile(0.99, rate(gigmatch_match_duration_ms_bucket[1m]))", "legendFormat": "p99"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "ms", "custom": {"lineWidth": 2}}},
+      "options": {"legend": {"displayMode": "list"}}
+    },
+    {
+      "id": 6,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "title": "Matches per Second by Outcome",
+      "type": "timeseries",
+      "targets": [
+        {"datasource": "Prometheus", "expr": "rate(gigmatch_matches_total{outcome='MATCHED'}[1m])", "legendFormat": "MATCHED"},
+        {"datasource": "Prometheus", "expr": "rate(gigmatch_matches_total{outcome='NO_MATCH'}[1m])", "legendFormat": "NO_MATCH"},
+        {"datasource": "Prometheus", "expr": "rate(gigmatch_matches_total{outcome='TIMEOUT'}[1m])", "legendFormat": "TIMEOUT"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "reqps", "custom": {"stacking": {"mode": "normal"}}}},
+      "options": {"legend": {"displayMode": "list"}}
+    },
+    {
+      "id": 7,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "title": "Clearing Price Distribution (cents)",
+      "type": "histogram",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "rate(gigmatch_clearing_price_cents_bucket[5m])",
+        "legendFormat": "{{le}}"
+      }],
+      "options": {"fillOpacity": 80}
+    },
+    {
+      "id": 8,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "title": "Provider Capacity Remaining",
+      "type": "bargauge",
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "gigmatch_provider_capacity_remaining",
+        "legendFormat": "{{providerKey}}"
+      }],
+      "options": {"orientation": "horizontal", "displayMode": "gradient"},
+      "fieldConfig": {"defaults": {"min": 0, "color": {"mode": "thresholds"},
+        "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 3}, {"color": "green", "value": 6}]}}}
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": ["gigmatch"],
+  "time": {"from": "now-15m", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "GigMatch — Matching Engine",
+  "uid": "gigmatch-dashboard",
+  "version": 1
+}

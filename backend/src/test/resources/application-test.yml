@@ -1,0 +1,10 @@
+gigmatch:
+  matching:
+    timeout-ms: 500   # Generous timeout for tests (CI can be slow)
+  async:
+    bidder-core-pool-size: 5
+    bidder-max-pool-size: 10
+
+logging:
+  level:
+    com.gigmatch: DEBUG

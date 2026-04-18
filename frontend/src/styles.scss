@@ -1,0 +1,405 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// ─── Custom dark palette ───────────────────────────────────────────────────
+$dark-primary-map: (
+  50:  #e8edf5,
+  100: #c5d0e3,
+  200: #9fb0cf,
+  300: #7990bb,
+  400: #5c77ac,
+  500: #3f5e9e,
+  600: #395696,
+  700: #314c8c,
+  800: #294282,
+  900: #1b3170,
+  A100: #b3c5ff,
+  A200: #809fff,
+  A400: #4d79ff,
+  A700: #3466ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #ffffff,
+    A700: #ffffff,
+  )
+);
+
+$gigmatch-primary: mat.define-palette($dark-primary-map, 500);
+$gigmatch-accent:  mat.define-palette(mat.$amber-palette, A400, A200, A700);
+$gigmatch-warn:    mat.define-palette(mat.$red-palette);
+
+$gigmatch-theme: mat.define-dark-theme((
+  color: (
+    primary: $gigmatch-primary,
+    accent:  $gigmatch-accent,
+    warn:    $gigmatch-warn,
+  ),
+  typography: mat.define-typography-config(
+    $font-family: "'Outfit', sans-serif",
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($gigmatch-theme);
+
+// ─── Design tokens ─────────────────────────────────────────────────────────
+:root {
+  --bg-deep:      #080E1A;
+  --bg-card:      #0F1829;
+  --bg-elevated:  #162035;
+  --bg-hover:     #1A2840;
+  --border:       #1E2D45;
+  --border-light: #243450;
+  --text-primary: #E8EDF5;
+  --text-secondary:#A8B8CC;
+  --text-muted:   #5A7090;
+  --amber:        #F59E0B;
+  --amber-dim:    rgba(245,158,11,0.15);
+  --green:        #22C55E;
+  --green-dim:    rgba(34,197,94,0.15);
+  --red:          #EF4444;
+  --red-dim:      rgba(239,68,68,0.15);
+  --teal:         #00D4AA;
+  --teal-dim:     rgba(0,212,170,0.15);
+  --orange:       #F97316;
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-body:    'Outfit', sans-serif;
+  --radius-sm:    6px;
+  --radius-md:    10px;
+  --radius-lg:    14px;
+}
+
+// ─── Reset & base ──────────────────────────────────────────────────────────
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+}
+
+// ─── Scrollbar ─────────────────────────────────────────────────────────────
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+// ─── Layout ────────────────────────────────────────────────────────────────
+.page-container {
+  padding: 28px 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 28px;
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 5px;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+// ─── Stat cards ────────────────────────────────────────────────────────────
+.stat-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: border-color 0.2s, transform 0.15s;
+
+  &:hover {
+    border-color: var(--amber) !important;
+    transform: translateY(-1px);
+  }
+
+  mat-card-content {
+    padding: 20px !important;
+  }
+
+  .stat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 2.1rem;
+    font-weight: 600;
+    color: var(--amber);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+}
+
+// ─── Mat cards ─────────────────────────────────────────────────────────────
+mat-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--text-primary) !important;
+}
+
+mat-card-title {
+  font-family: var(--font-display) !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.01em !important;
+}
+
+mat-card-subtitle {
+  color: var(--text-muted) !important;
+  font-size: 0.8rem !important;
+}
+
+// ─── Tables ────────────────────────────────────────────────────────────────
+.mat-mdc-table {
+  background: transparent !important;
+
+  .mat-mdc-header-row {
+    background: var(--bg-elevated) !important;
+  }
+
+  .mat-mdc-header-cell {
+    color: var(--text-muted) !important;
+    font-size: 0.72rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .mat-mdc-row {
+    background: transparent !important;
+    border-bottom: 1px solid var(--border) !important;
+    transition: background 0.12s;
+
+    &:hover { background: var(--bg-hover) !important; }
+  }
+
+  .mat-mdc-cell {
+    color: var(--text-primary) !important;
+    font-family: var(--font-body);
+    border-bottom: none !important;
+  }
+}
+
+// ─── Form fields ───────────────────────────────────────────────────────────
+.mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: var(--bg-elevated);
+  --mdc-filled-text-field-label-text-color: var(--text-muted);
+  --mdc-filled-text-field-input-text-color: var(--text-primary);
+}
+
+// ─── Chips ─────────────────────────────────────────────────────────────────
+.chip-matched  {
+  background: var(--green-dim) !important;
+  color: var(--green) !important;
+  border: 1px solid rgba(34,197,94,0.3) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+}
+.chip-no-match, .chip-no_match {
+  background: var(--red-dim) !important;
+  color: var(--red) !important;
+  border: 1px solid rgba(239,68,68,0.3) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+}
+.chip-timeout  {
+  background: rgba(249,115,22,0.15) !important;
+  color: var(--orange) !important;
+  border: 1px solid rgba(249,115,22,0.3) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+}
+.chip-active   {
+  background: var(--teal-dim) !important;
+  color: var(--teal) !important;
+  border: 1px solid rgba(0,212,170,0.3) !important;
+  font-size: 0.72rem !important;
+}
+.chip-paused   {
+  background: rgba(90,112,144,0.15) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid rgba(90,112,144,0.3) !important;
+  font-size: 0.72rem !important;
+}
+
+// ─── Utility classes ───────────────────────────────────────────────────────
+.terminal-number {
+  font-family: var(--font-mono) !important;
+  color: var(--text-primary);
+}
+
+.amber-text { color: var(--amber); }
+.green-text { color: var(--green); }
+.red-text   { color: var(--red); }
+.teal-text  { color: var(--teal); }
+.muted-text { color: var(--text-muted); }
+
+.full-width { width: 100%; }
+
+// ─── Live pulse animation ──────────────────────────────────────────────────
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+  display: inline-block;
+}
+
+// ─── Capacity bar (custom) ─────────────────────────────────────────────────
+.capacity-bar-track {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.capacity-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+
+  &.fill-ok     { background: var(--teal); }
+  &.fill-medium { background: var(--amber); }
+  &.fill-high   { background: var(--red); }
+}
+
+// ─── Company cards ─────────────────────────────────────────────────────────
+.company-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.company-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 20px !important;
+  transition: border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  &:hover {
+    border-color: var(--border-light) !important;
+    transform: translateY(-2px);
+  }
+
+  .company-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .company-key {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--amber);
+    margin-top: 2px;
+  }
+
+  .company-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .value {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+// ─── Paginator ─────────────────────────────────────────────────────────────
+.mat-mdc-paginator {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  border-top: 1px solid var(--border);
+}
+
+// ─── Progress bar (Material override for dark) ────────────────────────────
+.mdc-linear-progress__track {
+  background-color: var(--border) !important;
+}
+
+// ─── Snackbar ──────────────────────────────────────────────────────────────
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--bg-elevated);
+  --mdc-snackbar-supporting-text-color: var(--text-primary);
+}

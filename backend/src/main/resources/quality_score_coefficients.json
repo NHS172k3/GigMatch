@@ -1,0 +1,9 @@
+{
+  "coefficients": {
+    "completion_rate": 1.8,
+    "avg_rating_norm": 1.4,
+    "skills_match_score": 0.9
+  },
+  "intercept": -2.3,
+  "description": "Logistic regression predicting P(job_success). Features: completion_rate (0-1), avg_rating_norm (rating/5.0 normalized to 0-1), skills_match_score (fraction of required skills covered by provider, 0-1). Trained on synthetic historical job completion data. Run ml/train_model.py to regenerate."
+}

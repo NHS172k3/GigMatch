@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/gigmatch
+    username: ${DB_USER:-gigmatch}
+    password: ${DB_PASSWORD:-gigmatch}
+  data:
+    redis:
+      host: ${REDIS_HOST:-redis}
+
+logging:
+  level:
+    com.gigmatch: INFO

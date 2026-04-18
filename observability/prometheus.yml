@@ -1,0 +1,15 @@
+global:
+  scrape_interval:     5s
+  evaluation_interval: 5s
+  scrape_timeout:      4s
+
+scrape_configs:
+  - job_name: 'gigmatch-backend'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    scrape_timeout:  4s
+    static_configs:
+      - targets: ['backend:8080']
+        labels:
+          service: 'gigmatch-backend'
+          env: 'docker'

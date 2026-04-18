@@ -1,0 +1,70 @@
+# ─── Java / Maven ─────────────────────────────────────────────
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+
+# ─── Angular / Node ───────────────────────────────────────────
+frontend/dist/
+frontend/.angular/
+frontend/node_modules/
+frontend/.sass-cache/
+frontend/connect.lock
+frontend/coverage/
+frontend/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+
+# ─── Python ───────────────────────────────────────────────────
+ml/__pycache__/
+ml/venv/
+ml/.venv/
+ml/*.pyc
+ml/*.pyo
+ml/*.egg-info/
+ml/dist/
+ml/.pytest_cache/
+load-test/__pycache__/
+load-test/venv/
+load-test/.venv/
+load-test/*.pyc
+__pycache__/
+*.pyc
+
+# ─── Secrets / credentials ────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.jks
+
+# ─── IDEs ─────────────────────────────────────────────────────
+.idea/
+.idea/**
+*.iws
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── OS ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ─── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Docker volumes (if bind-mounted locally) ─────────────────
+postgres_data/
+redis_data/
+prometheus_data/
+grafana_data/
