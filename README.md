@@ -576,5 +576,3 @@ python train_model.py
 ```
 
 The `QualityScoreModel` bean reads this file from the classpath at startup via `@PostConstruct`, so no restart is needed after retraining — just rebuild the Docker image.
-#   G i g M a t c h  
- 
