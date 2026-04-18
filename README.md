@@ -6,8 +6,6 @@
 
 GigMatch is a **real-time dispatch platform for on-demand professional services**. Businesses and product teams post scoped job requests; pre-vetted **service companies** — dev shops, design studios, data consultancies, generalist agencies — have integrated their availability APIs with the platform. When a matching job arrives, their automated systems respond with a quote and estimated delivery time. GigMatch runs a quality-score-adjusted second-price auction across all responding companies in under 150ms and returns the best match.
 
-**Why sub-150ms makes sense here:** The "bidders" are automated company dispatch systems, not individual people typing proposals. This is the same model as hotel booking aggregators (Booking.com), insurance comparison engines, or cloud spot-instance bidding — all domains where automated system-to-system responses in milliseconds are entirely natural. Speed benefits the client (instant answer) and the platform (high throughput, no idle waiting between requests).
-
 This project demonstrates:
 - **Java 21 async concurrency** — `CompletableFuture` fan-out with urgency-adjusted deadline (70–150ms)
 - **Second-price auction mechanics** — winner selected by quality score; clearing price set by runner-up
